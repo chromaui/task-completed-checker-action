@@ -1,6 +1,8 @@
 # Task Completed Checker Action
 A GitHub action that checks if all tasks are completed in the pull requests.
 
+This is a fork from [kentaro-m/task-completed-checker-action](https://github.com/kentaro-m/task-completed-checker-action) so most of the code is based off that. The change I wanted to make involved using the original check that's kicked off by GitHub then pass/fail that check instead of creating a new one (which also simplifies the workflow). Since this is a fairly dramatic change to the original, it felt better as a fork that we maintain (especially since it's under the MIT license).
+
 ## :arrow_forward: Usage
 
 ### Create a workflow

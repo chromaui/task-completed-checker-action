@@ -45,7 +45,7 @@ describe("removeIgnoreTaskLitsText", () => {
     - [x] bar`);
   });
 
-  it("handles asterisks in ignored block", () => {
+  it("allows arbitrary lines in ignored block", () => {
     const text = `<!-- ignore-task-list-start -->
     **Something important:**
     - [ ] foo

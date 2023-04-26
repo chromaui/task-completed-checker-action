@@ -4,27 +4,25 @@ import { removeIgnoreTaskListText, createTaskListText } from "./utils";
 
 async function run(): Promise<void> {
   try {
+    const appName = "Task Completed Checker";
     const body = github.context.payload.pull_request?.body;
 
-    const token = core.getInput("repo-token", { required: true });
-    const appName = "Task Completed Checker";
+    core.getInput("repo-token", { required: true });
 
     if (!body) {
-      core.info("no task list and skip the process.");
+      core.info("No pull request body found.");
       return;
     }
 
-    const result = removeIgnoreTaskListText(body);
+    const cleanText = removeIgnoreTaskListText(body);
+    core.debug("Pull request body after removing ignored sections:");
+    core.debug(cleanText);
 
-    core.debug("creates a list of tasks which removed ignored task: ");
-    core.debug(result);
+    const outputText = createTaskListText(cleanText);
+    core.debug("Result: ");
+    core.debug(outputText);
 
-    const isTaskCompleted = result.match(/(- \[[ ]\].+)/g) === null;
-
-    const text = createTaskListText(result);
-
-    core.debug("creates a list of completed tasks and uncompleted tasks: ");
-    core.debug(text);
+    const isTaskCompleted = cleanText.match(/(- \[[ ]\].+)/g) === null;
 
     const output = {
       title: appName,
@@ -33,13 +31,13 @@ async function run(): Promise<void> {
         : "Some tasks are not completed!",
       conclusion: isTaskCompleted ? "success" : "failure",
       status: "completed",
-      text
+      text: outputText
     };
 
     core.setOutput("result", JSON.stringify(output));
     if (!isTaskCompleted) core.setFailed("Some tasks are not completed!");
   } catch (error) {
-    core.setFailed(error.message);
+    core.setFailed(error instanceof Error ? error.message : String(error));
   }
 }
 
